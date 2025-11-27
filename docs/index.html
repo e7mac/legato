@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGATO: Large-Scale End-to-End Generalizable Approach to Typeset OMR</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            text-align: center;
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .header .subtitle {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        .header-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .header-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+        .header-links a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .models-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .models-section h2 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .model-card {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .model-card strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .model-card a {
+            color: #764ba2;
+            text-decoration: none;
+        }
+        .model-card a:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .comparison-section {
+            margin-bottom: 50px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .subsection-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #444;
+            text-align: center;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        .input-image {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 20px auto;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .scores-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .score-item {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .score-item iframe {
+            width: 100%;
+            height: 394px;
+            border: none;
+        }
+        .score-caption {
+            padding: 10px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 14px;
+        }
+        .score-caption a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .score-caption a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .scores-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LEGATO: Large-Scale End-to-End Generalizable Approach to Typeset OMR</h1>
+        <div class="subtitle">Official Demo Website</div>
+        <div class="header-links">
+            <a href="https://arxiv.org/abs/2506.19065" target="_blank">📄 Paper (arXiv)</a>
+            <a href="https://github.com/guang-yng/legato" target="_blank">💻 GitHub Repository</a>
+            <a href="https://huggingface.co/guangyangmusic/legato" target="_blank">🤗 LEGATO Model</a>
+            <a href="https://huggingface.co/guangyangmusic/legato-small" target="_blank">🤗 LEGATO-Small Model</a>
+        </div>
+    </div>
+
+    <div class="models-section">
+        <h2>📦 Pretrained Models</h2>
+        <div class="models-grid">
+            <div class="model-card">
+                <strong>LEGATO (Full Model)</strong>
+                <a href="https://huggingface.co/guangyangmusic/legato" target="_blank">guangyangmusic/legato</a>
+                <p style="margin: 8px 0 0 0; font-size: 14px; color: #666;">Recommended for best performance</p>
+            </div>
+            <div class="model-card">
+                <strong>LEGATO-Small</strong>
+                <a href="https://huggingface.co/guangyangmusic/legato-small" target="_blank">guangyangmusic/legato-small</a>
+                <p style="margin: 8px 0 0 0; font-size: 14px; color: #666;">Lightweight variant for baseline comparisons</p>
+            </div>
+        </div>
+    </div>
+
+    <h1>Comparisons on Legato, SMT++, GPT-5 and Gemini 2.5 Pro</h1>
+
+    <div class="comparison-section">
+        <div class="section-title">Mozart: Piano Sonata No. 16 in C major, K. 545</div>
+        <div class="subsection-title">Input Image</div>
+        <img src="images/K545.png" alt="KV545 Input Image" class="input-image">
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">Legato Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375774/s/Wj-QRo/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375774/s/KdD5PE" target="_blank">KV545 legato</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">SMT++ Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375792/s/lCv5vG/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375792/s/TPqccG" target="_blank">KV545 smt</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">GPT-5 Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29562899/s/c6h6nt/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29562899/s/Kg9icp" target="_blank">K545 gpt 5</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">Gemini 2.5 Pro Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29562896/s/MjOCba/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29562896/s/FziLlm" target="_blank">K545 gemini 2.5 pro</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-section">
+        <div class="section-title">Chopin: Étude Op. 10, No. 4 in C♯ minor</div>
+        <div class="subsection-title">Input Image</div>
+        <img src="images/Op10No4.png" alt="Op10No4 Input Image" class="input-image">
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">Legato Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375801/s/AjZxsS/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375801/s/YqxExZ" target="_blank">Op10No4 legato</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">SMT++ Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375885/s/o_oCl-/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375885/s/5SJJWt" target="_blank">Op10No4 smt</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">GPT-5 Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29562902/s/p49zf2/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29562902/s/iEs-iQ" target="_blank">Op10No4 gpt 5</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">Gemini 2.5 Pro Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29562890/s/i5MMx0/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29562890/s/VDdGJd" target="_blank">Op10No4 gemini 2.5 pro</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comparison-section">
+        <div class="section-title">Liszt: Erlkönig (S. 558/4), arrangement of Schubert's D. 328</div>
+        <div class="subsection-title">Input Image</div>
+        <img src="images/S558.png" alt="S558 Input Image" class="input-image">
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">Legato Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375828/s/oXQj0H/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375828/s/Q605rw" target="_blank">S558 legato</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">SMT++ Output</div>
+                <iframe id="score-iframe" src="https://musescore.com/user/111486476/scores/29375837/s/2bv9EY/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29375837/s/vLkKwb" target="_blank">S558 smt</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+        <div class="scores-container">
+            <div class="score-item">
+                <div class="subsection-title">GPT-5 Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29562905/s/XHCqfr/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29562905/s/puCtHT" target="_blank">S558 gpt 5</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+            <div class="score-item">
+                <div class="subsection-title">Gemini 2.5 Pro Output</div>
+                <iframe id="score-iframe" width="100%" height="394" src="https://musescore.com/user/111486476/scores/29560856/s/s2OFeH/embed" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                <div class="score-caption">
+                    <a href="https://musescore.com/user/111486476/scores/29560856/s/1x4-j4" target="_blank">S558 gemini 2.5 pro</a> by <a href="https://musescore.com/user/111486476">legato-omr</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="models-section" style="margin-top: 50px;">
+        <h2>📄 Citation</h2>
+        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #667eea;">
+            <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6; color: #333;">@misc{yang2025legatolargescaleendtoendgeneralizable,
+    title={LEGATO: Large-scale End-to-end Generalizable Approach to Typeset OMR}, 
+    author={Guang Yang and Victoria Ebert and Nazif Tamer and Brian Siyuan Zheng and Luiza Pozzobon and Noah A. Smith},
+    year={2025},
+    eprint={2506.19065},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV},
+    url={https://arxiv.org/abs/2506.19065}, 
+}</pre>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 30px 20px; color: #666; margin-top: 50px;">
+        <p>LEGATO: Large-Scale End-to-End Generalizable Approach to Typeset OMR</p>
+        <p style="font-size: 14px; margin-top: 10px;">
+            <a href="https://arxiv.org/abs/2506.19065" target="_blank" style="color: #667eea; text-decoration: none;">Paper</a> | 
+            <a href="https://github.com/guangyangmusic/legato" target="_blank" style="color: #667eea; text-decoration: none;">GitHub</a> | 
+            <a href="https://huggingface.co/guangyangmusic/legato" target="_blank" style="color: #667eea; text-decoration: none;">Models</a>
+        </p>
+    </footer>
+
+</body>
+</html>
+
+
