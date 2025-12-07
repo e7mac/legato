@@ -571,6 +571,7 @@ class LegatoTrainer(Seq2SeqTrainer):
         """
 
         if not self.args.predict_with_generate or prediction_loss_only:
+            inputs = {k: v for k, v in inputs.items() if not k.startswith('gen_')}
             return super().prediction_step(
                 model, inputs, prediction_loss_only=prediction_loss_only, ignore_keys=ignore_keys
             )
@@ -610,11 +611,7 @@ class LegatoTrainer(Seq2SeqTrainer):
 
         with summon_full_params_context:
             length = generation_inputs["input_ids"].shape[1]
-            # if hasattr(model, "generate"):
-            #     generated_tokens = model.generate(**generation_inputs, **gen_kwargs)
-            # else:
-            original_model = self.accelerator.unwrap_model(self.model, keep_torch_compile=False)
-            generated_tokens = original_model.generate(**generation_inputs, **gen_kwargs)
+            generated_tokens = model.generate(**generation_inputs, **gen_kwargs)
             generated_tokens = generated_tokens[:, length-1:]
 
         # Temporary hack to ensure the generation config is not initialized for each iteration of the evaluation loop
