@@ -94,20 +94,23 @@ def cleanup_abc(abc):
                 ending = re.findall(rf"\|(.[^\|]*%\d+\n)", voice_contents[0])[-1]
                 if cur_gen_measures > num_measures[0]:
                     lines = voice_contents[-1].split("\n")
-                    new_voice_content = "\n".join(lines[:(num_measures[0]-1)//5])
-                    new_voice_content += '\n'
-                    r_measure = num_measures[0] % 5
-                    if r_measure == 0:
-                        r_measure = 5
-                    cnt = 0
-                    for c in lines[(num_measures[0]-1)//5]:
-                        if c == '|':
-                            cnt += 1
-                        new_voice_content += c
-                        if cnt == r_measure:
-                            break
-                    new_voice_content += ending
-                    voice_contents[-1] = new_voice_content
+                    if len(lines) <= (num_measures[0]-1)//5:
+                        voice_contents[-1] = "\n".join(lines)
+                    else:
+                        new_voice_content = "\n".join(lines[:(num_measures[0]-1)//5])
+                        new_voice_content += '\n'
+                        r_measure = num_measures[0] % 5
+                        if r_measure == 0:
+                            r_measure = 5
+                        cnt = 0
+                        for c in lines[(num_measures[0]-1)//5]:
+                            if c == '|':
+                                cnt += 1
+                            new_voice_content += c
+                            if cnt == r_measure:
+                                break
+                        new_voice_content += ending
+                        voice_contents[-1] = new_voice_content
                 else:
                     rest = f"x{num_8th}"
                     while cur_gen_measures + 5 <= num_measures[0]:
@@ -147,13 +150,16 @@ def convert_abc_to_xml(preds, tmp_dir):
         with open(tmp_musicxml_file, "w") as f:
             f.write(result.stdout.decode('utf-8'))
 
-        result = subprocess.run(
-            XMLFIX_CMD + [tmp_musicxml_file, '-o', tmp_musicxml_file],
-            stderr=subprocess.PIPE,
-            check=True
-        )
-        if result.returncode != 0:
-            raise RuntimeError(f"MuseScore XML formatting failed! Error: {result.stderr.decode('utf-8')}")
+        try:
+            result = subprocess.run(
+                XMLFIX_CMD + [tmp_musicxml_file, '-o', tmp_musicxml_file],
+                stderr=subprocess.PIPE,
+                check=True
+            )
+        except:
+            result = None
+        if result is None or result.returncode != 0:
+            print(f"MuseScore XML formatting failed! Error: {result.stderr.decode('utf-8') if result is not None else 'Unknown error'}")
 
         with open(tmp_musicxml_file, "r") as f:
             xmls.append(f.read())
