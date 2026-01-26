@@ -9,8 +9,14 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--prediction_file", type=str, help="Path to the XML prediction JSON file")
     parser.add_argument("--ground_truth", type=str, help="Path to the dataset or ground truth file")
+    parser.add_argument("--prediction_type", type=str, default=None, help="Type of prediction, `xml` or `krn`")
 
     args = parser.parse_args()
+
+    if args.prediction_type is None:
+        args.prediction_type = os.path.basename(args.prediction_file).split('.')[0].split('_')[-1]
+    
+    assert args.prediction_type in ['xml', 'krn'], f"Prediction type {args.prediction_type} not supported"
     
     if os.path.basename(args.prediction_file).split('.')[0].split('_')[-1] != 'xml':
         print("[WARNING] The prediction file name is not ended with `xml`. TEDn computation may fail.")
@@ -41,7 +47,7 @@ if __name__ == "__main__":
     assert not os.path.exists(pred_folder), f"Prediction folder {pred_folder} already exists"
     os.makedirs(pred_folder)
     for i, pred_xml in enumerate(pred_xmls):
-        with open(os.path.join(pred_folder, f'{i}.xml'), 'w') as f:
+        with open(os.path.join(pred_folder, f'{i}.{args.prediction_type}'), 'w') as f:
             f.write(pred_xml)
 
     print(f"Saved prediction and ground truth to {folder_name}")

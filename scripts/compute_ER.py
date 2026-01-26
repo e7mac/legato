@@ -1,6 +1,6 @@
 import json
 import os
-from datasets import load_from_disk
+from datasets import load_from_disk, DatasetDict
 from transformers import AutoTokenizer
 from legato.metrics.error_rates import compute_error_rates
 from argparse import ArgumentParser
@@ -19,9 +19,12 @@ if __name__ == "__main__":
     with open(args.prediction_file, "r") as f:
         predictions = json.load(f)
 
-    ds = load_from_disk(args.ground_truth)['test']
+    ds = load_from_disk(args.ground_truth)
+    if isinstance(ds, DatasetDict):
+        ds = ds['test']
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_path)
-    label_ids = tokenizer(ds['transcription'], padding=False, truncation=False, add_special_tokens=False).input_ids
+    gt_key = 'transcription' if 'transcription' in ds.column_names else 'abc'
+    label_ids = tokenizer(ds[gt_key], padding=False, truncation=False, add_special_tokens=False).input_ids
 
     metrics = compute_error_rates(tokenizer, args.num_workers, label_ids, predictions['tokens'])
 
