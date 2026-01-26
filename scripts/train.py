@@ -91,7 +91,7 @@ def main():
         ).to_dict() if 'transcription' in dataset['test'].column_names else None
 
     # We don't predict image tokens or padding tokens
-    tokens_to_mask = torch.tensor([processor.image_token_id, tokenizer.pad_token_id])
+    tokens_to_mask = torch.tensor([*tokenizer.additional_special_tokens_ids, tokenizer.pad_token_id])
 
     def collate_fn(examples):
         outputs = processor(
