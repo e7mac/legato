@@ -1,4 +1,4 @@
-accelerate==1.4.0
+accelerate==1.8.0
 datasets==3.2.0
 fire==0.7.0
 transformers==4.50.0
@@ -10,4 +10,4 @@ tqdm
 wandb
 pyparsing
 zss
-musicdiff
+musicdiff @ git+ssh://git@github.com/guang-yng/efficient-musicdiff.git
