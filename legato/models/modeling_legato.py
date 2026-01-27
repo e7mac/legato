@@ -22,11 +22,11 @@ class LegatoModel(MllamaForConditionalGeneration):
         if encoder_ref is not None:
             if load_pretrained_encoder:
                 logger.info(f"Loading vision encoder from {encoder_ref}")
-                self.vision_model = MllamaVisionModel.from_pretrained(encoder_ref)
+                self.model.vision_model = MllamaVisionModel.from_pretrained(encoder_ref)
                 for param in self.vision_model.parameters():
                     param.requires_grad = False
             else:
-                self.vision_model = None # Remove vision model and load it later
+                self.model.vision_model = None # Remove vision model and load it later
         elif load_pretrained_encoder:
             raise ValueError(
                 "The configuration does not specify 'encoder_pretrained_model_name_or_path'. "
