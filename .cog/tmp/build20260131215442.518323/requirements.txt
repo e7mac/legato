@@ -1,0 +1,7 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+accelerate==1.8.0
+datasets==3.2.0
+transformers==4.50.0
+torch==2.6.0
+pillow==11.1.0
+tqdm
