@@ -9,5 +9,6 @@ build:
     - "torch==2.6.0"
     - "pillow==11.1.0"
     - "tqdm"
+    - "pyparsing"
 
 predict: "predict.py:Predictor"
