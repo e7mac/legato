@@ -2,7 +2,7 @@
 Replicate Predictor for LEGATO - Optical Music Recognition Model
 
 This module provides a Cog-compatible predictor for deploying LEGATO on Replicate.
-LEGATO converts sheet music images to ABC notation.
+LEGATO converts sheet music images to ABC notation or MusicXML.
 """
 
 from cog import BasePredictor, Input, Path
@@ -11,6 +11,8 @@ from PIL import Image
 from transformers import AutoProcessor, GenerationConfig
 
 from legato.models import LegatoModel, LegatoConfig
+from utils.convert import cleanup_abc
+from utils.abc2xml import MusicXml, fixDoctype
 
 
 class Predictor(BasePredictor):
@@ -31,9 +33,17 @@ class Predictor(BasePredictor):
         self.model = self.model.to("cuda")
         self.model.eval()
 
+        # Initialize ABC to MusicXML converter
+        self.abc2xml = MusicXml()
+
     def predict(
         self,
-        image: Path = Input(description="Sheet music image to transcribe to ABC notation"),
+        image: Path = Input(description="Sheet music image to transcribe"),
+        output_format: str = Input(
+            description="Output format for the transcription.",
+            default="musicxml",
+            choices=["abc", "musicxml"],
+        ),
         beam_size: int = Input(
             description="Beam size for generation. Higher values may improve quality but are slower.",
             default=10,
@@ -54,9 +64,9 @@ class Predictor(BasePredictor):
         ),
     ) -> str:
         """
-        Transcribe a sheet music image to ABC notation.
+        Transcribe a sheet music image to ABC notation or MusicXML.
 
-        Returns the ABC notation as a string.
+        Returns the transcription as a string in the specified format.
         """
         # Load and process the image
         img = Image.open(str(image)).convert("RGB")
@@ -81,6 +91,20 @@ class Predictor(BasePredictor):
             )
 
         # Decode the output
-        abc_output = self.processor.batch_decode(outputs, skip_special_tokens=True)
+        abc_output = self.processor.batch_decode(outputs, skip_special_tokens=True)[0]
 
-        return abc_output[0]
+        if output_format == "musicxml":
+            # Clean up ABC notation for conversion
+            cleaned_abc = cleanup_abc(abc_output)
+            if not cleaned_abc:
+                return "<?xml version='1.0' encoding='utf-8'?>\n<score-partwise version=\"3.0\"></score-partwise>"
+
+            # Convert ABC to MusicXML
+            try:
+                score = self.abc2xml.parse(cleaned_abc)
+                return fixDoctype(score)
+            except Exception as e:
+                # Return empty MusicXML if conversion fails
+                return f"<?xml version='1.0' encoding='utf-8'?>\n<!-- Conversion error: {str(e)} -->\n<score-partwise version=\"3.0\"></score-partwise>"
+
+        return abc_output
