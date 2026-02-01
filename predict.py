@@ -5,6 +5,9 @@ This module provides a Cog-compatible predictor for deploying LEGATO on Replicat
 LEGATO converts sheet music images to ABC notation or MusicXML.
 """
 
+import tempfile
+from typing import Union
+
 from cog import BasePredictor, Input, Path
 import torch
 from PIL import Image
@@ -62,11 +65,11 @@ class Predictor(BasePredictor):
             ge=1.0,
             le=2.0,
         ),
-    ) -> str:
+    ) -> Union[str, Path]:
         """
         Transcribe a sheet music image to ABC notation or MusicXML.
 
-        Returns the transcription as a string in the specified format.
+        Returns the transcription as a string (ABC) or a file path (MusicXML).
         """
         # Load and process the image
         img = Image.open(str(image)).convert("RGB")
@@ -97,14 +100,20 @@ class Predictor(BasePredictor):
             # Clean up ABC notation for conversion
             cleaned_abc = cleanup_abc(abc_output)
             if not cleaned_abc:
-                return "<?xml version='1.0' encoding='utf-8'?>\n<score-partwise version=\"3.0\"></score-partwise>"
+                xml_content = "<?xml version='1.0' encoding='utf-8'?>\n<score-partwise version=\"3.0\"></score-partwise>"
+            else:
+                # Convert ABC to MusicXML
+                try:
+                    score = self.abc2xml.parse(cleaned_abc)
+                    xml_content = fixDoctype(score)
+                except Exception as e:
+                    # Return empty MusicXML if conversion fails
+                    xml_content = f"<?xml version='1.0' encoding='utf-8'?>\n<!-- Conversion error: {str(e)} -->\n<score-partwise version=\"3.0\"></score-partwise>"
 
-            # Convert ABC to MusicXML
-            try:
-                score = self.abc2xml.parse(cleaned_abc)
-                return fixDoctype(score)
-            except Exception as e:
-                # Return empty MusicXML if conversion fails
-                return f"<?xml version='1.0' encoding='utf-8'?>\n<!-- Conversion error: {str(e)} -->\n<score-partwise version=\"3.0\"></score-partwise>"
+            # Write to a temporary file and return the path
+            output_file = Path(tempfile.mktemp(suffix=".musicxml"))
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(xml_content)
+            return output_file
 
         return abc_output
